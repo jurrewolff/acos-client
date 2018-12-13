@@ -67,13 +67,20 @@ class VirtualPort(base.BaseV30):
         )
         return self._get(url)
 
+    def exists(self, virtual_server_name, name, protocol, port):
+        try:
+            self.get(virtual_server_name, name, protocol, port)
+            return True
+        except ae.NotFound:
+            return False
+
     def _set(
         self,
         virtual_server_name,
         name,
         protocol,
         port,
-        service_group_name,
+        service_group_name=None,        # Custom - =None
         s_pers_name=None,
         c_pers_name=None,
         status=0,
@@ -146,7 +153,7 @@ class VirtualPort(base.BaseV30):
         name,
         protocol,
         port,
-        service_group_name,
+        service_group_name=None,        # Custom - =None
         s_pers_name=None,
         c_pers_name=None,
         status=1,
@@ -183,7 +190,7 @@ class VirtualPort(base.BaseV30):
         name,
         protocol,
         port,
-        service_group_name,
+        service_group_name=None,        # Custom - =None
         s_pers_name=None,
         c_pers_name=None,
         status=1,

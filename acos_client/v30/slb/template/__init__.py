@@ -18,13 +18,18 @@ from acos_client.v30.slb.template.persistence import CookiePersistence
 from acos_client.v30.slb.template.persistence import SourceIpPersistence
 from acos_client.v30.slb.template.ssl import ClientSSL
 from acos_client.v30.slb.template.ssl import ServerSSL
-
+from acos_client.v30.slb.template.ssl import SSLCipher		#   Custom
+from acos_client.v30.slb.template.l7 import HTTPTemplate		#   Custom
 
 class Template(base.BaseV30):
 
     @property
     def client_ssl(self):
         return ClientSSL(self.client)
+
+    @property       #   Custom
+    def cipher_ssl(self):
+        return SSLCipher(self.client)
 
     @property
     def cookie_persistence(self):
@@ -37,3 +42,8 @@ class Template(base.BaseV30):
     @property
     def server_ssl(self):
         return ServerSSL(self.client)
+
+    @property
+    def http_template(self):
+        return HTTPTemplate(self.client)
+

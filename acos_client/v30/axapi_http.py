@@ -108,11 +108,11 @@ class HttpClient(object):
         try:
             if file_name is not None:
                 device_response = session_request(
-                    self.url_base + api_url, verify=False, files=files, headers=request_headers, timeout=timeout
+                    self.url_base + api_url, verify=True, files=files, headers=request_headers, timeout=timeout
                 )
             else:
                 device_response = session_request(
-                    self.url_base + api_url, verify=False, data=payload, headers=request_headers, timeout=timeout
+                    self.url_base + api_url, verify=True, data=payload, headers=request_headers, timeout=timeout
                 )
         except (Exception) as e:
             LOG.error("acos_client failing with error %s after %s retries", e.__class__.__name__, max_retries)

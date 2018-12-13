@@ -14,6 +14,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+from acos_client import errors as acos_errors
 from acos_client.v30 import base
 
 
@@ -28,14 +29,14 @@ class Vlan(base.BaseV30):
     def get_list(self):
         return self._get(self.url_prefix)
 
-    def create(self, vlan_id, shared_vlan=False,
+    def create(self, name, vlan_id, ve, shared_vlan=False,
                untagged_eths=[], untagged_trunks=[],
                tagged_eths=[], tagged_trunks=[], veth=False,
                lif=None):
 
         payload = {
             "vlan": self._build_payload(
-                vlan_id, shared_vlan, untagged_eths,
+                name, vlan_id, ve, shared_vlan, untagged_eths,
                 untagged_trunks,
                 tagged_eths, tagged_trunks,
                 veth, lif)
@@ -45,16 +46,29 @@ class Vlan(base.BaseV30):
     def get(self, vlan_id):
         return self._get(self._build_id_url(vlan_id))
 
+    def exists(self, vlan_id):		#	Custom	
+        try:
+            self.get(vlan_id)
+            return True
+        except acos_errors.NotFound:
+            return False
+
     def delete(self, vlan_id):
         return self._delete(self._build_id_url(vlan_id))
 
-    def _build_payload(self, vlan_id, shared_vlan,
+    def _build_payload(self, name, vlan_id, ve, shared_vlan,
                        untagged_eths, untagged_trunks,
                        tagged_eths, tagged_trunks,
                        veth, lif):
         rv = {
             "vlan-num": vlan_id,
         }
+
+        if name:                       #   Custom (=vlan name)
+            rv["name"] = name
+
+        if ve:                              #   Custom
+            rv["ve"] = ve                   #   Custom                       
 
         if shared_vlan is True:
             rv["shared-vlan"] = shared_vlan
@@ -70,9 +84,6 @@ class Vlan(base.BaseV30):
 
         if tagged_trunks:
             rv.update(self._build_range_list("tagged-trunk", tagged_trunks))
-
-        if veth:
-            rv["ve"] = vlan_id
 
         if lif:
             rv["untagged-lif"] = lif

@@ -34,6 +34,13 @@ class VirtualServer(base.BaseV30):
     def get(self, name):
         return self._get(self.url_prefix + name)
 
+    def exists(self, name):
+        try:
+            self.get(name)
+            return True
+        except acos_errors.NotFound:
+            return False
+
     def _set(
         self, name, ip_address=None, arp_disable=False, vrid=None, template_virtual_server=None, update=False, **kwargs
     ):
